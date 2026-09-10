@@ -1,0 +1,9 @@
+import { createFileRoute } from '@tanstack/react-router';
+import WarehouseForm from '@/features/warehouses/pages/warehouse-form/WarehouseForm';
+
+export const Route = createFileRoute('/_app/warehouses/create')({
+  component: () => <WarehouseForm mode="create" />,
+  staticData: {
+    pageTitle: 'Create Warehouse',
+  },
+});

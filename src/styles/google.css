@@ -1,0 +1,17 @@
+.pac-container {
+  /* map neutral light/dark -> secondary (s-*) */
+  @apply dark:bg-secondary-800 dark:border-secondary-600 border-secondary-200 rounded-md border bg-white shadow-md;
+}
+
+.pac-item {
+  @apply border-t-secondary-200 dark:border-t-secondary-500 text-secondary-500 dark:text-secondary-300 hover:bg-secondary-100 hover:dark:bg-secondary-800 hover:cursor-pointer;
+}
+
+.pac-item-query,
+.pac-item-query * {
+  @apply text-secondary-700 dark:text-secondary-50 !font-semibold;
+}
+
+.pac-matched {
+  @apply font-normal;
+}

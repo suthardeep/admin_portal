@@ -1,0 +1,161 @@
+import { cn } from "@/utils/helpers";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { Button, type ButtonProps } from "../base/Button";
+import { Icon } from "../base/Icon";
+
+const Dialog: React.FC<DialogProps> = (props) => {
+  const {
+    children,
+    isOpen,
+    title = "",
+    subTitle,
+    close,
+    actions,
+    size = "md",
+    disableBackdropClose = false,
+  } = props;
+  const [shouldRenderContent, setShouldRenderContent] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRenderContent(true);
+      if (document) {
+        document.body.style.overflow = "hidden";
+      }
+    } else {
+      const timeout = setTimeout(() => setShouldRenderContent(false), 200);
+      return () => clearTimeout(timeout);
+    }
+  }, [isOpen]);
+
+  const handleBackdropClick = () => {
+    if (!disableBackdropClose) {
+      close();
+    }
+  };
+
+  const dialogContent = (
+    <div
+      aria-label="dialog"
+      className={cn(
+        `fall fixed inset-0 z-101 bg-black/80 backdrop-blur-[1.5px] transition-all duration-200`,
+        isOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+      )}
+      onClick={handleBackdropClick}
+    >
+      <div
+        className={cn(
+          `dark:bg-neutral border-neutral-content dark:border-base-3 max-h-[90dvh] max-w-[90dvw] m-auto flex w-full flex-col rounded-xl border bg-white shadow-lg`,
+          sizeMap[size]
+        )}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {shouldRenderContent && (
+          <>
+            <div className={cn("flex shrink-0 items-center justify-between", paddingClass)}>
+              <div className="flex flex-col">
+                {title && typeof title === "string" ? (
+                  <h5 className="text-black font-medium">{title}</h5>
+                ) : (
+                  title
+                )}
+                {subTitle && <p className="text-black mt-0.5">{subTitle}</p>}
+              </div>
+              <span className="hover:bg-error/80 group  rounded-lg p-2">
+              <Icon name={"X"} className="group-hover:text-white w-6 h-6" onClick={close} />
+              </span>
+            </div>
+
+            <div className="flex-1 overflow-hidden px-5 py-4 relative z-9999">
+              <div className="no-scrollbar max-h-[90dvh] overflow-y-auto relative z-9999">{children}</div>
+            </div>
+
+            {actions && (
+              <div className={cn("flex shrink-0 justify-end gap-x-2 relative", paddingClass)}>
+                {actions?.tertiary && (
+                  <Button
+                    variant={actions?.secondary?.variant || "ghost"}
+                    color={actions?.secondary?.color || "neutral"}
+                    {...actions.tertiary}
+                  />
+                )}
+                {actions?.secondary && (
+                  <Button
+                    variant={actions?.secondary?.variant || "ghost"}
+                    color={actions?.secondary?.color || "neutral"}
+                    {...actions.secondary}
+                  />
+                )}
+                {actions?.primary && (
+                  <Button
+                    variant={actions?.primary?.variant || "filled"}
+                    color={actions?.primary?.color || "primary"}
+                    {...actions.primary}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  if (typeof document !== "undefined") {
+    const dialogRoot =
+      document.getElementById("dialog-root") ||
+      (() => {
+        const el = document.createElement("div");
+        el.id = "dialog-root";
+        document.body.appendChild(el);
+        return el;
+      })();
+
+    return createPortal(dialogContent, dialogRoot);
+  }
+
+  return null;
+};
+
+const sizeMap = {
+  sm: "w-[95%] max-w-lg",
+  md: "w-[95%] max-w-2xl",
+  lg: "w-[95%] max-w-4xl",
+  xl: "w-[95%] max-w-7xl",
+  full: "w-[98%]",
+};
+const paddingClass = `px-5 py-4`;
+
+export default Dialog;
+
+// export interface DialogAction {
+//   label: string;
+//   onClick: () => void;
+//   disabled?: boolean;
+//   startIcon?: ButtonProps["startIcon"];
+//   endIcon?: ButtonProps["endIcon"];
+//   fullWidth?: boolean;
+//   loading?: boolean;
+//   className?: string;
+//   size?: ButtonProps["size"];
+//   variant?: ButtonProps["variant"];
+//   color?: ButtonProps["color"];
+// }
+
+export interface DialogActions {
+  primary?: ButtonProps;
+  secondary?: ButtonProps;
+  tertiary?: ButtonProps;
+}
+
+export interface DialogProps {
+  close: () => void;
+  isOpen: boolean;
+  children: ReactNode;
+  title: string | ReactNode;
+  subTitle?: string;
+  actions?: DialogActions;
+  size?: "sm" | "md" | "lg" | "xl" | "full";
+  disableBackdropClose?: boolean;
+}

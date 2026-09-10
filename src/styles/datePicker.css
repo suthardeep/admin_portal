@@ -1,0 +1,51 @@
+
+.rdp-root {
+  @apply px-4 py-0.5;
+}
+
+.rdp-caption_label {
+  /* neutral -> secondary mapping */
+  @apply text-secondary-700 dark:text-secondary-100 text-sm font-medium;
+}
+
+/* .rdp-today .rdp-day_button {
+  @apply text-primary-600 dark:text-primary-50 dark:bg-primary-600/40 dark:border-primary-500 border font-semibold;
+} */
+
+.rdp-day_button {
+  @apply hover:bg-secondary-50 dark:hover:bg-secondary-500 !size-9 !rounded-md;
+}
+
+.rdp-selected .rdp-day_button {
+  /* primary mapping for selected state */
+  @apply bg-primary-500 dark:bg-primary-500 !border-none text-sm font-semibold text-white;
+}
+
+.rdp-today .rdp-day_button {
+  @apply dark:text-primary-50 text-primary-600 relative font-bold;
+  &::after {
+    content: "";
+    @apply bg-primary-600 absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full;
+  }
+}
+
+.rdp-disabled {
+  opacity: 20% !important;
+}
+
+
+.rdp-day {
+  @apply text-secondary-700 dark:text-secondary-100 text-sm;
+}
+
+.rdp-weekday {
+  @apply text-secondary-500 dark:text-secondary-300;
+}
+
+.rdp-button_previous > svg {
+  @apply fill-secondary-600 dark:fill-secondary-200 h-[1.2rem] w-[1.2rem];
+}
+
+.rdp-button_next > svg {
+  @apply fill-secondary-600 dark:fill-secondary-200 h-[1.2rem] w-[1.2rem];
+}
